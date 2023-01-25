@@ -4,6 +4,7 @@ import DynamicFastImage from './DynamicFastImage';
 import DynamicPressable from './DynamicPressable';
 import DynamicTextInput from './DynamicTextInput';
 import DynamicText from './DynamicText';
+import AppContainer from './AppContainer';
 
 export {
   DynamicAnimatedView,
@@ -12,4 +13,5 @@ export {
   DynamicPressable,
   DynamicTextInput,
   DynamicText,
+  AppContainer,
 };
