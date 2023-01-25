@@ -1,15 +1,20 @@
 import React from 'react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {StyleSheet} from 'react-native';
+import {ThemeProvider} from '@shopify/restyle';
 
 import restyleTheme from 'restyleTheme';
-import {ThemeProvider} from '@shopify/restyle';
 
 type AppContainerProps = {children: React.ReactNode};
 
 const AppContainer = ({children}: AppContainerProps) => (
-  <GestureHandlerRootView>
+  <GestureHandlerRootView style={styles.container}>
     <ThemeProvider theme={restyleTheme}>{children}</ThemeProvider>
   </GestureHandlerRootView>
 );
 
 export default AppContainer;
+
+const styles = StyleSheet.create({
+  container: {flex: 1},
+});
