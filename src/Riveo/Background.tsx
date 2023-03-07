@@ -1,22 +1,17 @@
-import type { ReactNode } from "react";
-import React from "react";
-import { View } from "react-native";
+import React, {ReactNode} from 'react';
+
+import {DynamicView} from 'src/components';
 
 interface BackgroundProps {
   children: ReactNode;
 }
 
-export const Background = ({ children }: BackgroundProps) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "black",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {children}
-    </View>
-  );
-};
+export const Background = ({children}: BackgroundProps) => (
+  <DynamicView
+    backgroundColor="white"
+    flex={1}
+    alignItems="center"
+    justifyContent="center">
+    {children}
+  </DynamicView>
+);
