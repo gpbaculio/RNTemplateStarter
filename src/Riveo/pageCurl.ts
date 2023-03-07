@@ -49,7 +49,7 @@ vec4 main(float2 xy) {
       ctx.color.rgb *= pow(saturate((r-d)/r), 0.2);
     } else { 
       ctx.color = TRANSPARENT;
-      if(inRRect(p1, container, cornerRadius)) { 
+      if(inRRect(xy, container, cornerRadius)) { 
         ctx.color.a = 0.5;
       }
     }
