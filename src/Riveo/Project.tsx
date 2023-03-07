@@ -1,12 +1,12 @@
-import type { SkFont } from "@shopify/react-native-skia";
+import {
+  runTiming,
+  SkFont,
+  useComputedValue,
+  useTouchHandler,
+} from '@shopify/react-native-skia';
 import {
   Image,
   RoundedRect,
-  Easing,
-  runTiming,
-  useComputedValue,
-  useValue,
-  useTouchHandler,
   Canvas,
   ImageShader,
   Rect,
@@ -17,14 +17,15 @@ import {
   Skia,
   Text,
   useImage,
-} from "@shopify/react-native-skia";
-import { Dimensions, PixelRatio } from "react-native";
+  useValue,
+} from '@shopify/react-native-skia';
+import {Dimensions, PixelRatio} from 'react-native';
 
-import { Trash } from "./Icons";
-import { Labels } from "./Labels";
-import { pageCurl } from "./pageCurl";
+import {Trash} from './Icons';
+import {Labels} from './Labels';
+import {pageCurl} from './pageCurl';
 
-const { width: wWidth } = Dimensions.get("window");
+const {width: wWidth} = Dimensions.get('window');
 const pd = PixelRatio.get();
 const height = 150;
 const outer = Skia.XYWHRect(0, 0, wWidth, height);
@@ -34,7 +35,7 @@ const cornerRadius = 16;
 const inner = Skia.RRectXY(
   Skia.XYWHRect(pad, pad, wWidth - pad * 2, height - pad * 2),
   cornerRadius,
-  cornerRadius
+  cornerRadius,
 );
 const labelHeight = 25;
 
@@ -53,41 +54,83 @@ interface ProjectProps {
   smallFont: SkFont;
 }
 
+const opt = {
+  duration: 450,
+};
+
 export const Project = ({
   font,
   smallFont,
-  project: { picture, title, color, size, duration },
+  project: {picture, title, color, size, duration},
 }: ProjectProps) => {
   const image = useImage(picture);
+  const origin = useValue(outer.width);
+  const pointer = useValue(outer.width);
+
+  const onTouch = useTouchHandler({
+    onStart: ({x}) => {
+      origin.current = x;
+    },
+    onActive: ({x}) => {
+      pointer.current = x;
+    },
+    onEnd: () => {
+      runTiming(origin, outer.width, opt);
+      runTiming(pointer, outer.width, opt);
+    },
+  });
+
+  const uniforms = useComputedValue(() => {
+    return {
+      resolution: [outer.width, outer.height].map(v => v * pd),
+      origin: origin.current * pd,
+      pointer: pointer.current * pd,
+      container: [
+        inner.rect.x,
+        inner.rect.y,
+        inner.rect.x + inner.rect.width,
+        inner.rect.y + inner.rect.height,
+      ].map(v => v * pd),
+      cornerRadius: cornerRadius * pd,
+    };
+  }, [origin, pointer]);
+
   if (!image) {
     return null;
   }
+
   return (
     <Canvas
+      onTouch={onTouch}
       style={{
         width: outer.width,
         height: outer.height,
-      }}
-    >
+      }}>
       <RoundedRect rect={inner} color="red" />
       <Group
         transform={[
-          { translateX: 310 },
-          { translateY: (150 - 24 * 1.5) / 2 },
-          { scale: 1.5 },
-        ]}
-      >
+          {translateX: 310},
+          {translateY: (150 - 24 * 1.5) / 2},
+          {scale: 1.5},
+        ]}>
         <Trash />
       </Group>
-      <Group>
-        <Group clip={inner}>
+      <Group transform={[{scale: 1 / pd}]}>
+        <Group
+          clip={inner}
+          transform={[{scale: pd}]}
+          layer={
+            <Paint>
+              <RuntimeShader source={pageCurl} uniforms={uniforms} />
+            </Paint>
+          }>
           <Image image={image} rect={inner.rect} fit="cover" />
           <Rect
             rect={rect(
               inner.rect.x,
               inner.rect.y + inner.rect.height - labelHeight,
               inner.rect.width,
-              labelHeight
+              labelHeight,
             )}
             color={color}
           />
