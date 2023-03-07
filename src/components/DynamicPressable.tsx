@@ -1,8 +1,19 @@
-import {createBox} from '@shopify/restyle';
+import {
+  createBox,
+  createRestyleComponent,
+  createVariant,
+  VariantProps,
+} from '@shopify/restyle';
 import {Pressable, PressableProps} from 'react-native';
 
 import {Theme} from 'restyleTheme';
 
-const DynamicPressable = createBox<Theme, PressableProps>(Pressable);
+const BoxPressable = createBox<Theme, PressableProps>(Pressable);
 
-export default DynamicPressable;
+const DynamiPressable = createRestyleComponent<
+  VariantProps<Theme, 'buttonVariants'> &
+    React.ComponentProps<typeof BoxPressable>,
+  Theme
+>([createVariant({themeKey: 'buttonVariants'})], BoxPressable);
+
+export default DynamiPressable;
