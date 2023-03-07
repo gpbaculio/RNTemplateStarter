@@ -31,4 +31,5 @@ export const colors = {
   '#FB61DA': '#FB61DA',
   '#DAFB61': '#DAFB61',
   '#61FBCF': '#61FBCF',
+  white: 'white',
 };
