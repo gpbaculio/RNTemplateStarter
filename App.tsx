@@ -1,12 +1,12 @@
 import React from 'react';
-import {View} from 'react-native';
 
 import {AppContainer} from 'src/components';
+import Stickers from 'src/Stickers';
 
 const App = () => {
   return (
     <AppContainer>
-      <View>asd</View>
+      <Stickers />
     </AppContainer>
   );
 };
